@@ -28,6 +28,7 @@ type RouteDetailParams = {
   Order: {
     number: string | number;
     order_id: string;
+    order: boolean;
   };
 };
 export type CategoryProps = {
@@ -75,14 +76,22 @@ export default function Order() {
       {
         text: "sim",
         onPress: async () => {
-          try {
-            await api.delete("/order/remover/table", {
-              params: { order_id: route.params?.order_id },
-            });
+          let existe = route.params?.order;
+          if (existe) {
             navigation.goBack();
-          } catch (error) {
-            console.log(error);
+            return;
           }
+
+          await api
+            .delete("/order/remover/table", {
+              params: { order_id: route.params?.order_id },
+            })
+            .then(() => {
+              navigation.goBack();
+            })
+            .catch((error) => {
+              console.log(error);
+            });
         },
       },
       {
@@ -152,7 +161,7 @@ export default function Order() {
 
     if (itemIgual.length) {
       let id_item = itemIgual[0].id;
-
+      console.log(id_item);
       Alert.alert(
         "Deseja alterar",
         `${itemIgual[0].name}`,
@@ -164,6 +173,7 @@ export default function Order() {
               try {
                 const response = await api.put("/order/item", {
                   item_id: id_item,
+                  preparation: false,
                   amount: Number(amout),
                 });
                 const data = response.data;
@@ -201,27 +211,40 @@ export default function Order() {
       itemIgual = [];
       return;
     }
-    const respose = await api.post("/order/add", {
-      ordem_id: route.params?.order_id,
-      product_id: productselected?.id,
-      amount: Number(amout),
-    });
+    // let data = {
+    //   ordem_id: route.params?.order_id,
+    //   product_id: productselected?.id,
+    //   amount: Number(amout),
+    //   table: route.params?.table,
+    // };
+    console.log(route.params?.order_id);
+    await api
+      .post("/order/add", {
+        ordem_id: route.params?.order_id,
+        product_id: productselected?.id,
+        amount: Number(amout),
+      })
+      .then((respose) => {
+        let data = {
+          id: respose.data.itens.id as string,
+          products_id: productselected?.id as string,
+          name: productselected?.name as string,
+          amount: amout,
+          price: respose.data.itens.product.price as string,
+        };
+        setItems((aldArray) => [...aldArray, data]);
 
-    let data = {
-      id: respose.data.id as string,
-      products_id: productselected?.id as string,
-      name: productselected?.name as string,
-      amount: amout,
-      price: respose.data.product.price as string,
-    };
-
-    setItems((aldArray) => [...aldArray, data]);
-
-    setAmout("1");
+        setAmout("1");
+        Keyboard.dismiss();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
-  async function hendledeleteItem(item: string) {
+  async function hendledeleteItem(item: any) {
     ///1 vericar se o produto selecionado e igual ao produto na lista
+
     let itemIgual = items.filter((itemP, index) => {
       return itemP.id === item;
     });
@@ -235,13 +258,19 @@ export default function Order() {
           {
             text: "Sim",
             onPress: async () => {
-              await api.delete("/order/remover/item", {
-                data: { item_id: item },
-              });
-              let removerItem = items.filter((itemfilter) => {
-                return itemfilter.id !== item;
-              });
-              setItems(removerItem);
+              await api
+                .delete("/order/remover/item", {
+                  params: { item_id: itemIgual[0].id },
+                })
+                .then(() => {
+                  let removerItem = items.filter((itemfilter) => {
+                    return itemfilter.id !== item;
+                  });
+                  setItems(removerItem);
+                })
+                .catch((erro) => {
+                  console.log(erro);
+                });
             },
           },
           {

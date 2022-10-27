@@ -18,14 +18,16 @@ export function FinishOrder() {
   const navigation = useNavigation<NativeStackNavigationProp<StackPromsList>>();
   const route = useRoute<FinishOrderProp>();
   async function hendleFinish() {
-    try {
-      await api.put("order/make", {
+    await api
+      .put("order/make", {
         ordem_id: route.params?.order_id,
+      })
+      .then(() => {
+        navigation.popToTop();
+      })
+      .catch((error) => {
+        console.log(error + "Erro no envio do pedido");
       });
-      navigation.popToTop();
-    } catch (error) {
-      console.log(error + "Erro no envio do pedido");
-    }
   }
   return (
     <View style={styles.container}>

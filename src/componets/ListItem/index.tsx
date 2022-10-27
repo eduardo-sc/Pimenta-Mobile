@@ -3,13 +3,14 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { ItensProps } from "../../pages/Order";
 import { Feather } from "@expo/vector-icons";
 interface ItemProps {
-  data: ItensProps;
+  data: ItensProps | any;
   DeleteItem: (item_id: string) => void;
   AlterarItem: (item_id: string) => void;
 }
 export function ListItem({ data, DeleteItem, AlterarItem }: ItemProps) {
   function hendleDeleteItem() {
     DeleteItem(data.id);
+    console.log(data);
   }
 
   return (

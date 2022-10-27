@@ -12,6 +12,7 @@ export type StackPromsList = {
   Order: {
     number: number | string;
     order_id: string;
+    order: boolean;
   };
   FinishOrder: {
     number: string | number;

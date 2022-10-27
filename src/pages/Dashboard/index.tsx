@@ -3,12 +3,10 @@ import { useNavigation } from "@react-navigation/native";
 import {
   TextInput,
   Text,
-  View,
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { AuthContext } from "../../contexts/AuthContext";
 import { api } from "../../services/api";
 import { StackPromsList } from "../../routes/app.routes";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -21,15 +19,22 @@ export default function Dashboard() {
     if (number === "") {
       return;
     }
-    const response = await api.post("/order", {
-      table: Number(number),
-    });
-
-    //preciso fazer uma requisicao e abrir a mesa e navegar para proxima tela
-    navigation.navigate("Order", {
-      number: number,
-      order_id: response.data.id,
-    });
+    await api
+      .post("/order", {
+        table: Number(number),
+      })
+      .then((response) => {
+        console.log(response.data);
+        //preciso fazer uma requisicao e abrir a mesa e navegar para proxima tela
+        navigation.navigate("Order", {
+          number: number,
+          order_id: response.data.id,
+          order: response.data.order,
+        });
+      })
+      .catch((erro) => {
+        console.log(erro);
+      });
     setNumber("");
   }
   return (
