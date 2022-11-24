@@ -10,7 +10,7 @@ interface ItemProps {
 export function ListItem({ data, DeleteItem, AlterarItem }: ItemProps) {
   function hendleDeleteItem() {
     DeleteItem(data.id);
-    console.log(data);
+    console.log(data.id);
   }
 
   return (

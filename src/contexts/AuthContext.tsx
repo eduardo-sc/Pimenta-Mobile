@@ -94,7 +94,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         email,
         tokem,
       });
-      console.log(response.data);
     } catch (error) {
       Alert.alert("Sem acesso", error.response.data.error);
       setLoadAuth(false);

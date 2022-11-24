@@ -211,13 +211,7 @@ export default function Order() {
       itemIgual = [];
       return;
     }
-    // let data = {
-    //   ordem_id: route.params?.order_id,
-    //   product_id: productselected?.id,
-    //   amount: Number(amout),
-    //   table: route.params?.table,
-    // };
-    console.log(route.params?.order_id);
+
     await api
       .post("/order/add", {
         ordem_id: route.params?.order_id,
@@ -225,13 +219,15 @@ export default function Order() {
         amount: Number(amout),
       })
       .then((respose) => {
+        console.log(respose.data);
         let data = {
-          id: respose.data.itens.id as string,
+          id: respose.data.product.id as string,
           products_id: productselected?.id as string,
           name: productselected?.name as string,
           amount: amout,
-          price: respose.data.itens.product.price as string,
+          price: respose.data.product.price as string,
         };
+
         setItems((aldArray) => [...aldArray, data]);
 
         setAmout("1");
@@ -248,8 +244,9 @@ export default function Order() {
     let itemIgual = items.filter((itemP, index) => {
       return itemP.id === item;
     });
-
+    console.log("igual", itemIgual);
     if (itemIgual.length) {
+      console.log("igual", itemIgual[0].id);
       Alert.alert(
         "Deseja remover",
         `${itemIgual[0].name}`,

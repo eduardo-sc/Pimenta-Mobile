@@ -22,7 +22,13 @@ export default function SignIn() {
   }
   return (
     <View style={styles.container}>
-      <Image style={styles.logo} source={require("../../assets/logo2.png")} />
+      <Image
+        style={styles.logo}
+        source={require("../../assets/logo2.png")}
+        width={174}
+        height={94}
+      />
+
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -56,10 +62,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#1d1d2e",
+    width: "100%",
   },
   logo: {
     marginBottom: 18,
   },
+
   inputContainer: {
     width: "95%",
     alignContent: "center",
