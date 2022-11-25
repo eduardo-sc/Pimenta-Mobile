@@ -155,13 +155,12 @@ export default function Order() {
   async function heandleAdd() {
     ///1 vericar se o produto selecionado e igual ao produto na lista
 
-    let itemIgual = items.filter((item, index) => {
+    var itemIgual = items.filter((item, index) => {
       return item.products_id === productselected?.id;
     });
 
     if (itemIgual.length) {
       let id_item = itemIgual[0].id;
-      console.log(id_item);
       Alert.alert(
         "Deseja alterar",
         `${itemIgual[0].name}`,
@@ -170,30 +169,33 @@ export default function Order() {
           {
             text: "Sim",
             onPress: async () => {
-              try {
-                const response = await api.put("/order/item", {
+              console.log("apos o if ", id_item);
+              await api
+                .put("/order/item", {
                   item_id: id_item,
-                  preparation: false,
                   amount: Number(amout),
-                });
-                const data = response.data;
-                let itensResponse = data.map((data: any) => {
-                  return {
-                    id: data.id as string,
-                    products_id: data.product.id as string,
-                    name: data.product.name as string,
-                    amount: data.amount,
-                    price: data.product.price,
-                  };
-                });
-                setItems(itensResponse);
-                setAmout("1");
-                Keyboard.dismiss();
-              } catch (error) {
-                console.log(error);
-              }
+                })
+                .then((response) => {
+                  const data = response.data;
+                  console.log(data);
+                  // let itensResponse = data.map((data: any) => {
+                  //   return {
+                  //     id: data.id as string,
+                  //     products_id: data.product.id as string,
+                  //     name: data.product.name as string,
+                  //     amount: data.amount,
+                  //     price: data.product.price,
+                  //   };
+                  // });
+                  // setItems(itensResponse);
+                  // setAmout("1");
+                  Keyboard.dismiss();
 
-              itemIgual = [];
+                  itemIgual = [];
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
             },
           },
           {
@@ -211,42 +213,44 @@ export default function Order() {
       itemIgual = [];
       return;
     }
+    if (!itemIgual.length) {
+      console.log("entrou");
+      await api
+        .post("/order/add", {
+          ordem_id: route.params?.order_id,
+          product_id: productselected?.id,
+          amount: Number(amout),
+        })
+        .then((respose) => {
+          console.log(respose.data);
+          let data = {
+            id: respose.data.id as string,
+            products_id: respose.data.product.id as string,
+            name: productselected?.name as string,
+            amount: amout,
+            price: respose.data.product.price as string,
+          };
 
-    await api
-      .post("/order/add", {
-        ordem_id: route.params?.order_id,
-        product_id: productselected?.id,
-        amount: Number(amout),
-      })
-      .then((respose) => {
-        console.log(respose.data);
-        let data = {
-          id: respose.data.product.id as string,
-          products_id: productselected?.id as string,
-          name: productselected?.name as string,
-          amount: amout,
-          price: respose.data.product.price as string,
-        };
+          setItems((aldArray) => [...aldArray, data]);
 
-        setItems((aldArray) => [...aldArray, data]);
-
-        setAmout("1");
-        Keyboard.dismiss();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+          setAmout("1");
+          Keyboard.dismiss();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   }
 
-  async function hendledeleteItem(item: any) {
+  async function hendledeleteItem(item: ItensProps) {
     ///1 vericar se o produto selecionado e igual ao produto na lista
-
+    console.log("Paramentro", item);
     let itemIgual = items.filter((itemP, index) => {
-      return itemP.id === item;
+      return itemP.id === item.id;
     });
     console.log("igual", itemIgual);
     if (itemIgual.length) {
-      console.log("igual", itemIgual[0].id);
+      console.log("igual", itemIgual[0]);
       Alert.alert(
         "Deseja remover",
         `${itemIgual[0].name}`,
@@ -254,14 +258,16 @@ export default function Order() {
         [
           {
             text: "Sim",
+
             onPress: async () => {
+              console.log("item", itemIgual[0].id);
               await api
                 .delete("/order/remover/item", {
                   params: { item_id: itemIgual[0].id },
                 })
                 .then(() => {
                   let removerItem = items.filter((itemfilter) => {
-                    return itemfilter.id !== item;
+                    return itemfilter.id !== item.id;
                   });
                   setItems(removerItem);
                 })
