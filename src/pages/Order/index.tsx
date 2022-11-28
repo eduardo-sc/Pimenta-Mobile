@@ -178,17 +178,17 @@ export default function Order() {
                 .then((response) => {
                   const data = response.data;
                   console.log(data);
-                  // let itensResponse = data.map((data: any) => {
-                  //   return {
-                  //     id: data.id as string,
-                  //     products_id: data.product.id as string,
-                  //     name: data.product.name as string,
-                  //     amount: data.amount,
-                  //     price: data.product.price,
-                  //   };
-                  // });
-                  // setItems(itensResponse);
-                  // setAmout("1");
+                  let itensResponse = data.map((data: any) => {
+                    return {
+                      id: data.id as string,
+                      products_id: data.product.id as string,
+                      name: data.product.name as string,
+                      amount: data.amount,
+                      price: data.product.price,
+                    };
+                  });
+                  setItems(itensResponse);
+                  setAmout("1");
                   Keyboard.dismiss();
 
                   itemIgual = [];
