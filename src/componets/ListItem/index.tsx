@@ -28,7 +28,7 @@ export function ListItem({ data, DeleteItem, AlterarItem }: ItemProps) {
         <Text style={[styles.textoItem, { fontWeight: "bold" }]}>
           Quantidade : {data.amount}{" "}
         </Text>
-        <Text style={styles.textoItem}>R$ {data.price}</Text>
+        <Text style={styles.textoItem}>R$ {parseFloat(data.price).toFixed(2).replace('.',',')}</Text>
       </View>
       <View style={{ alignItems: "center", marginTop: 15 }}>
         <TouchableOpacity

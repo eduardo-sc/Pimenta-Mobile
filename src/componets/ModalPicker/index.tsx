@@ -32,7 +32,7 @@ export function ModalPicker({
       onPress={() => onPressItem(item)}
     >
       <Text style={styles.item}>{item?.name}</Text>
-      {item?.price && <Text style={styles.item}>R$ {item?.price}</Text>}
+      {item?.price && <Text style={styles.item}>R$ {parseFloat(item?.price).toFixed(2).replace('.',',')}</Text>}
     </TouchableOpacity>
   ));
   return (

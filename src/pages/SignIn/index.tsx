@@ -25,8 +25,9 @@ export default function SignIn() {
       <Image
         style={styles.logo}
         source={require("../../assets/logo2.png")}
-        width={174}
-        height={94}
+        width={350}
+        height={90}
+
       />
 
       <View style={styles.inputContainer}>
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   logo: {
-    marginBottom: 18,
+    marginBottom: 10,
   },
 
   inputContainer: {

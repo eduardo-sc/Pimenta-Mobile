@@ -6,14 +6,17 @@ import {
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
+  Modal
 } from "react-native";
 import { api } from "../../services/api";
 import { StackPromsList } from "../../routes/app.routes";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { ModalQrcode } from "../../componets/ModalQrcode";
 
 export default function Dashboard() {
   const navigation = useNavigation<NativeStackNavigationProp<StackPromsList>>();
   const [number, setNumber] = useState("");
+  const [modalProductVisible, setModalProductVisible] = useState(false);
 
   async function openOrder() {
     if (number === "") {
@@ -37,6 +40,11 @@ export default function Dashboard() {
       });
     setNumber("");
   }
+  async function openQrcode(){
+    setModalProductVisible(true)
+    
+
+  }
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Novo Pedido</Text>
@@ -51,7 +59,20 @@ export default function Dashboard() {
       <TouchableOpacity style={styles.button} onPress={openOrder}>
         <Text style={styles.buttonText}>Abrir Mesa</Text>
       </TouchableOpacity>
+      <TouchableOpacity style={styles.buttonQrcode} onPress={openQrcode}>
+        <Text style={styles.buttonText}>QrCode Cardapio</Text>
+      </TouchableOpacity>
+      <Modal
+      transparent={true}
+      visible={modalProductVisible}
+      animationType="slide"
+      >
+      <ModalQrcode
+      handleCloseModal={() => setModalProductVisible(false)}
+      />
+    </Modal>
     </SafeAreaView>
+    
   );
 }
 const styles = StyleSheet.create({
@@ -64,6 +85,15 @@ const styles = StyleSheet.create({
   },
   title: { fontSize: 30, fontWeight: "bold", color: "#fff", marginBottom: 24 },
   button: {
+    width: "90%",
+    height: 40,
+    backgroundColor: "#3fffa3",
+    marginVertical: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 8,
+  },
+  buttonQrcode: {
     width: "90%",
     height: 40,
     backgroundColor: "#3fffa3",

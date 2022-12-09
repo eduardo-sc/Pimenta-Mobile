@@ -125,8 +125,11 @@ export default function Order() {
   useEffect(() => {
     async function loadInfo() {
       const response = await api.get("/categorys/list");
+      setCategory([])
       setCategory(response.data);
+      setCategorySelected(undefined)
       setCategorySelected(response.data[0]);
+      
     }
 
     loadInfo();
